@@ -1,18 +1,45 @@
-# Exported from Render on 2025-06-07T21:53:41Z
+
 services:
-- type: web
-  name: herramientas-v2
-  runtime: docker
-  repo: https://github.com/emilio554-a11x/herramientas-v2
-  plan: free
-  envVars:
-  - key: MONGO_URI
-    sync: false
-  region: oregon
-  dockerContext: .
-  dockerfilePath: Dockerfile
-  domains:
-  - herramientas.com
-  - www.herramientas.com
-  autoDeployTrigger: commit
-version: "1"
+  - type: web
+    name: renttoolpro-backend
+    env: docker
+    plan: free
+    dockerfilePath: ./wordpress/Dockerfile
+    buildFilter:
+      paths:
+        - wordpress/**
+    envVars:
+      - key: WORDPRESS_DB_HOST
+        value: mysql:3306
+      - key: WORDPRESS_DB_USER
+        value: root
+      - key: WORDPRESS_DB_PASSWORD
+        value: renttool123
+      - key: WORDPRESS_DB_NAME
+        value: renttoolpro
+      - key: JWT_SECRET_KEY
+        value: Cl@veSuperSecreta2025
+
+  - type: worker
+    name: renttoolpro-mysql
+    env: docker
+    plan: free
+    dockerCommand: ""
+    buildFilter:
+      paths:
+        - docker-compose.yml
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        value: renttool123
+      - key: MYSQL_DATABASE
+        value: renttoolpro
+
+  - type: web
+    name: renttoolpro-phpmyadmin
+    env: docker
+    plan: free
+    dockerCommand: ""
+    buildFilter:
+      paths:
+        - docker-compose.yml
+
